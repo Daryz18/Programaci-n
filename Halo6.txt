@@ -1,0 +1,49 @@
+####Actividad antimicrobiana (halo en mm) de 3 extractos botánicos vs. Control (placa de difusión).
+   Pregunta: ¿Algún extracto supera al control y a los otros? Variable continua, 4 grupos.
+   Dataset: 06_halos_antimicrobianos.csv######
+¿Algún extracto supera al control y a los otros? 
+El estracto B supera la medida y rango de Ph en comparacion al extracto A y B, representando ser el tratamiento con el mayor medicion de halo en milimetros(mm).
+#########Actividad antimicrobiana########
+> setwd("C:/Users/Alumno 25-B/Desktop")
+library(tidyverse)
+library(rstatix)     
+library(ggpubr) 
+> datos <- read.csv("06_halos_antimicrobianos.csv")
+> head(datos)
+> str(datos)
+> datos %>%
++     group_by(tratamiento) %>%
++     shapiro_test(halo_mm)
+> ggqqplot(datos, x = "halo_mm", facet.by = "tratamiento")
+> ngrupos <- nlevels(datos$tratamiento)
+> if (ngrupos == 2) {
++ res_norm <- datos %>%
++     group_by(tratamiento) %>%
++     shapiro_test(halo_mm)
++ 
+> if(all(res_norm$p > 0.05)){
++ prueba <- t_test(datos, halo_mm ~ tratamiento, var.equal = TRUE) %>%
++     add_significance() %>%
++     add_effectsize("cohen")
++ } else {
++ 
+> install.packages("coin")
+> prueba <- wilcox_test(datos, halo_mm ~ tratamiento) %>%
++     add_significance()
+> efecto <- wilcox_effsize(datos, halo_mm ~ tratamiento)
+> efecto <- wilcox_effsize(datos, halo_mm ~ tratamiento)
+> print(efecto)
+> resumen <- datos %>%
++     group_by(tratamiento) %>%
++     summarise(mediana = median(halo_mm),
++               IQR = IQR(halo_mm)){
+> print(resumen)
+> print(prueba)
+> grafico <- ggboxplot(datos, x = "tratamiento", y = "halo_mm",
++                      color = "tratamiento", add = "jitter") +
++     stat_compare_means(method = ifelse(ngrupos > 2, "anova", "t.test"),
++                        label = "p.format")
+> print(grafico)
+
+####LeonardoHS####
+
